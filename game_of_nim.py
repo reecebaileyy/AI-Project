@@ -4,28 +4,29 @@ class GameOfNim(Game):
     """Implements the Game of Nim according to project specifications."""
 
     def __init__(self, board):
-        moves = self._generate_moves(initial_board)
-        initial_state = GameState(to_move='MAX', utility=0,
-                                board=board, moves=moves)
-        self.initial = initial_state 
+        """
+        Initializes the Game of Nim with a given starting board.
+        Example: [7, 5, 3, 1] means 4 piles with 7, 5, 3, and 1 objects.
+        """
+        moves = self._generate_moves(board)
+        self.initial = GameState(to_move='MAX', utility=0,
+                                 board=board, moves=moves)
 
     def _generate_moves(self, board):
-        """Return all valid moves from the given board."""
+        """Return all valid (row, num_removed) moves for a given board."""
         moves = []
         for r, count in enumerate(board):
-            for n in range(1, count + 1): 
+            for n in range(1, count + 1):
                 moves.append((r, n))
         return moves
 
-
     def actions(self, state):
-        """Return a list of all valid moves (r, n) for the current state."""
+        """Return a list of all valid moves for the given state."""
         return state.moves
 
     def result(self, state, move):
         """
-        Given a state and a valid move (r, n),
-        return the new GameState after applying the move.
+        Apply a move (r, n) to a state and return the resulting GameState.
         """
         r, n = move
         board = state.board.copy()
@@ -42,7 +43,7 @@ class GameOfNim(Game):
                          board=board, moves=moves)
 
     def terminal_test(self, state):
-        """Return True if the game is over (all piles empty)."""
+        """Return True if all piles are empty (game over)."""
         return all(x == 0 for x in state.board)
 
     def utility(self, state, player):
@@ -53,5 +54,5 @@ class GameOfNim(Game):
         return state.utility if player == 'MAX' else -state.utility
 
     def display(self, state):
-        """Print the current board state."""
+        """Print the current board configuration."""
         print(f"board: {state.board}")
